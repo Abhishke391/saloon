@@ -1,17 +1,14 @@
 import jwt from 'jsonwebtoken'
 
-//admin auth middleware
-const authAdmin = async (req, res, next) => {
+//user auth middleware
+const authUser = async (req, res, next) => {
     try {
-        const {atoken} = req.headers
-        if (!atoken) {
-            return res.json({success:false, message:"NOt authorized login"})
+        const {token} = req.headers
+        if (!token) {
+            return res.json({success:false, message:"Not authorized login"})
         }
-        const token_decode = jwt.verify(atoken, process.env.JWT_SECRET)
-        if(token_decode !== process.env.ADMIN_EMAIL + process.env.ADMIN_PASSWORD){
-            return res.json({success:false, message:"NOt authorized login"})
-        }
-
+        const token_decode = jwt.verify(token, process.env.JWT_SECRET) 
+        req.body.userId = token_decode.id
         next()
         
     } catch (error) {
@@ -20,4 +17,4 @@ const authAdmin = async (req, res, next) => {
     }
 }
 
-export default authAdmin
+export default authUser
